@@ -87,7 +87,16 @@ export async function upsertCell(
     "cells",
     cell.id
   ) as DocumentReference<CellData>;
-  await setDoc(ref, cell, { merge: true });
+
+  // Remove undefined fields — Firestore doesn't accept them
+  const clean: Record<string, unknown> = {
+    id: cell.id,
+    raw: cell.raw,
+    computed: cell.computed ?? null,
+  };
+  if (cell.format) clean.format = cell.format;
+
+  await setDoc(ref, clean, { merge: true });
   await updateDoc(doc(db, "documents", docId), { updatedAt: Date.now() });
 }
 
