@@ -334,12 +334,11 @@ class Parser {
 
     switch (name) {
       case "SUM":
-        return args.flat().reduce((a, b) => a + toNum(b), 0);
-
+       
       case "AVERAGE": {
         const nums = args.flat().filter((v) => !isNaN(toNum(v)));
         if (nums.length === 0) return "#DIV/0!";
-        return nums.reduce((a, b) => a + toNum(b), 0) / nums.length;
+        return nums.reduce((a: number, b) => a + toNum(b), 0) / nums.length;
       }
 
       case "COUNT":
