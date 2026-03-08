@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   onAuthStateChanged,
   signInWithPopup,
+   signInAnonymously,
   GoogleAuthProvider,
   signOut as firebaseSignOut,
   updateProfile,
@@ -42,10 +43,14 @@ export function useAuth(): AuthState {
   };
 
   const updateDisplayName = async (name: string): Promise<void> => {
+    // Sign in anonymously first if not already authenticated
+    if (!auth.currentUser) {
+      await signInAnonymously(auth);
+    }
     if (!auth.currentUser) return;
     await updateProfile(auth.currentUser, { displayName: name });
-    // Force re-read
-    setUser({ ...auth.currentUser });
+    await auth.currentUser.reload();
+    setUser(auth.currentUser);
   };
 
   return { user, loading, signInWithGoogle, signOut, updateDisplayName };
