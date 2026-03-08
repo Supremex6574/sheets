@@ -69,32 +69,25 @@ export function useDocument(
 
   // ── Write helpers ──────────────────────────────────────────────────────────
 
- const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
-
   const saveCell = useCallback(
     async (cell: CellData): Promise<void> => {
       const writeId = cell.id;
+      localWriteIds.current.add(writeId);
       addPendingWrite(writeId);
 
-      // Debounce — wait 600ms after last change before writing
-      if (saveTimers.current[writeId]) {
-        clearTimeout(saveTimers.current[writeId]);
+      try {
+        await upsertCell(docId, cell);
+        removePendingWrite(writeId);
+      } catch (err) {
+        console.error("Failed to save cell", err);
+        setSyncStatus("error");
+      } finally {
+        localWriteIds.current.delete(writeId);
       }
-
-      saveTimers.current[writeId] = setTimeout(async () => {
-        try {
-          await upsertCell(docId, cell);
-          removePendingWrite(writeId);
-        } catch (err) {
-          console.error("Failed to save cell", err);
-          setSyncStatus("error");
-        } finally {
-          delete saveTimers.current[writeId];
-        }
-      }, 600);
     },
     [docId, addPendingWrite, removePendingWrite, setSyncStatus]
   );
+
   const saveColMeta = useCallback(
     async (colMeta: Record<number, ColMeta>): Promise<void> => {
       try {
