@@ -166,7 +166,6 @@ export function Grid({
           moveSelection(0, -1);
           break;
         case "ArrowDown":
-        case "Enter":
           e.preventDefault();
           moveSelection(0, 1);
           break;
