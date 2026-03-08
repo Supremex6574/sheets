@@ -280,17 +280,6 @@ class Parser {
     if (t.type === "CELL_REF") {
       this.consume();
       // Check for range: CELL_REF ':' CELL_REF (e.g. standalone A1:A5 is unusual but handle)
-      if (this.peek().type === "COLON") {
-        this.consume();
-        const endRef = this.expect("CELL_REF").value;
-        const ids = expandRange(`${t.value}:${endRef}`);
-        const nums = ids.flatMap((id) => {
-          const v = this.resolveCell(id);
-          const n = toNum(v);
-          return isNaN(n) ? [] : [n];
-        });
-        return nums.reduce((a, b) => a + b, 0); // default range = sum
-      }
       return this.resolveCell(t.value);
     }
 
