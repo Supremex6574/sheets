@@ -5,7 +5,7 @@ import { exportToCSV, exportToJSON, downloadFile } from "../../utils/exportUtils
 import type { CellData } from "../../types";
 
 interface ToolbarProps {
-  onFormatChange: (cellId: string, updatedCell: CellData) => void;
+  onFormatChange: (cell: CellData) => void;
 }
 
 const COLORS = [
@@ -32,7 +32,7 @@ export function Toolbar({ onFormatChange }: ToolbarProps) {
         ...patch,
       },
     };
-    onFormatChange(selectedCell, updated);
+    onFormatChange(updated);
   };
 
   const handleExportCSV = () => {
