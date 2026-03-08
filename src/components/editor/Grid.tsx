@@ -374,49 +374,44 @@ export function Grid({
         className="relative"
         style={{ width: totalWidth, height: totalHeight }}
       >
-        {/* ── Corner ─────────────────────────────────────────────────────── */}
+      {/* ── Corner + Column headers ────────────────────────────────── */}
+<div className="sticky top-0 z-30 flex" style={{ height: HEADER_HEIGHT }}>
+  {/* Corner */}
+  <div
+    className="shrink-0 bg-[#0c0c17] border-r border-b border-white/[0.06]"
+    style={{ width: CORNER_WIDTH }}
+  />
+  {/* Column headers */}
+  {Array.from({ length: MAX_COLS }, (_, displayIdx) => {
+    const colIdx = colOrder[displayIdx];
+    const letter = colIndexToLetter(colIdx);
+    const width = getColWidth(displayIdx);
+    const isDragging = dragCol === displayIdx;
+    const isDropTarget = dropTarget === displayIdx;
+
+    return (
+      <div
+        key={displayIdx}
+        className={`relative shrink-0 flex items-center justify-center text-[11px] font-medium cursor-grab active:cursor-grabbing border-r border-b border-white/[0.06] transition-colors
+          ${isDragging ? "opacity-50" : ""}
+          ${isDropTarget ? "bg-[#00d4ff]/10" : "bg-[#0c0c17] hover:bg-white/[0.03]"}
+        `}
+        style={{ width }}
+        draggable
+        onDragStart={(e) => handleColDragStart(e, displayIdx)}
+        onDragOver={(e) => handleColDragOver(e, displayIdx)}
+        onDrop={(e) => handleColDrop(e, displayIdx)}
+        onDragEnd={handleColDragEnd}
+      >
+        <span className="text-white/40 select-none">{letter}</span>
         <div
-          className="sticky top-0 left-0 z-30 bg-[#0c0c17] border-r border-b border-white/[0.06]"
-          style={{ width: CORNER_WIDTH, height: HEADER_HEIGHT }}
+          className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-[#00d4ff]/60 z-10"
+          onMouseDown={(e) => startColResize(e, displayIdx)}
         />
-
-        {/* ── Column headers ─────────────────────────────────────────────── */}
-        <div
-          className="sticky top-0 z-20 flex"
-          style={{ marginLeft: CORNER_WIDTH, height: HEADER_HEIGHT }}
-        >
-          {Array.from({ length: MAX_COLS }, (_, displayIdx) => {
-            const colIdx = colOrder[displayIdx];
-            const letter = colIndexToLetter(colIdx);
-            const width = getColWidth(displayIdx);
-            const isDragging = dragCol === displayIdx;
-            const isDropTarget = dropTarget === displayIdx;
-
-            return (
-              <div
-                key={displayIdx}
-                className={`relative shrink-0 flex items-center justify-center text-[11px] font-medium cursor-grab active:cursor-grabbing border-r border-b border-white/[0.06] transition-colors
-                  ${isDragging ? "opacity-50" : ""}
-                  ${isDropTarget ? "bg-[#00d4ff]/10" : "bg-[#0c0c17] hover:bg-white/[0.03]"}
-                `}
-                style={{ width }}
-                draggable
-                onDragStart={(e) => handleColDragStart(e, displayIdx)}
-                onDragOver={(e) => handleColDragOver(e, displayIdx)}
-                onDrop={(e) => handleColDrop(e, displayIdx)}
-                onDragEnd={handleColDragEnd}
-              >
-                <span className="text-white/40 select-none">{letter}</span>
-
-                {/* Resize handle */}
-                <div
-                  className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-[#00d4ff]/60 z-10"
-                  onMouseDown={(e) => startColResize(e, displayIdx)}
-                />
-              </div>
-            );
-          })}
-        </div>
+      </div>
+    );
+  })}
+</div>
 
         {/* ── Row headers + cells ─────────────────────────────────────────── */}
         {Array.from({ length: MAX_ROWS }, (_, rowIdx) => {
