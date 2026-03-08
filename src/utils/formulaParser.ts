@@ -323,6 +323,8 @@ class Parser {
 
     switch (name) {
       case "SUM":
+         return args.flat().reduce((a: number, b) => a + toNum(b), 0);
+
        
       case "AVERAGE": {
         const nums = args.flat().filter((v) => !isNaN(toNum(v)));
