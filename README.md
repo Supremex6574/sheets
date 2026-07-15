@@ -2,7 +2,7 @@
 
 A lightweight, real-time collaborative spreadsheet built with Next.js 15 (App Router), TypeScript, Tailwind CSS, and Firebase.
 
-**Live Demo:** [https://your-app.vercel.app](https://your-app.vercel.app)
+**Live Demo:** [https://your-app.vercel.app](https://sheets-peach.vercel.app/)
 
 ---
 
